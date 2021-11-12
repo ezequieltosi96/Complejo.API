@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Complejo.Application.Queries.Field
 {
-    public class GetFieldByFilterQuery : GetAllPagedBaseQuery, IRequest<PagedListResponse<IList<FieldByFilterDto>>>
+    public class GetAllFieldByFilterQuery : GetAllPagedBaseQuery, IRequest<PagedListResponse<IList<FieldByFilterDto>>>
     {
         public Guid? IdFieldType { get; set; }
 

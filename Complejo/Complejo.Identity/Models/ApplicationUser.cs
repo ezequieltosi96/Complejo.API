@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Complejo.Application.Interfaces.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Complejo.Identity.Models
 {

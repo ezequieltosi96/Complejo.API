@@ -28,6 +28,7 @@ namespace Complejo.Identity
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>().AddDefaultTokenProviders();
 
             services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddAuthentication(opts =>
             {

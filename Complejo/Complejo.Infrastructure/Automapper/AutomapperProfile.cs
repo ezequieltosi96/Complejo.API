@@ -9,6 +9,10 @@ namespace Complejo.Infrastructure.Automapper
             FieldAutomapperProfile();
             FieldStatusAutomapperProfile();
             FieldTypeAutomapperProfile();
+
+            UserAutomapperProfile();
+
+
         }
     }
 }

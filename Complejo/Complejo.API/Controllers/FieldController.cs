@@ -56,11 +56,11 @@ namespace Complejo.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("by-filter", Name = "Get Field By Filter")]
+        [HttpGet("by-filter", Name = "Get All Field By Filter")]
         [ProducesResponseType(typeof(PagedListResponse<List<FieldByFilterDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetFieldByFilter([FromQuery] GetFieldByFilterQuery query)
+        public async Task<IActionResult> GetFieldByFilter([FromQuery] GetAllFieldByFilterQuery query)
         {
             var response = await mediator.Send(query);
             return this.OkIfNotNullNotFoundOtherwise(response);

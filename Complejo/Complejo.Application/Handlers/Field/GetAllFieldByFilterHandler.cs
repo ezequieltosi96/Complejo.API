@@ -15,18 +15,18 @@ using System.Threading.Tasks;
 
 namespace Complejo.Application.Handlers.Field
 {
-    public class GetFieldByFilterHandler : IRequestHandler<GetFieldByFilterQuery, PagedListResponse<IList<FieldByFilterDto>>>
+    public class GetAllFieldByFilterHandler : IRequestHandler<GetAllFieldByFilterQuery, PagedListResponse<IList<FieldByFilterDto>>>
     {
         private readonly IFieldRepository fieldRepository;
         private readonly IMapping mapping;
 
-        public GetFieldByFilterHandler(IFieldRepository fieldRepository, IMapping mapping)
+        public GetAllFieldByFilterHandler(IFieldRepository fieldRepository, IMapping mapping)
         {
             this.fieldRepository = fieldRepository;
             this.mapping = mapping;
         }
 
-        public async Task<PagedListResponse<IList<FieldByFilterDto>>> Handle(GetFieldByFilterQuery request, CancellationToken cancellationToken)
+        public async Task<PagedListResponse<IList<FieldByFilterDto>>> Handle(GetAllFieldByFilterQuery request, CancellationToken cancellationToken)
         {
             Expression<Func<Domain.Entities.Field, bool>> predicate = x => request.Description != null ? x.DescriptionSearch.Contains(request.Description.Trim().ToUpper()) : true && 
                                                                            request.IdFieldStatus.HasValue ? x.FieldStatus.Id == request.IdFieldStatus.Value : true &&
