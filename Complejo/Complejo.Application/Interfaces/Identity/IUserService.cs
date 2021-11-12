@@ -8,9 +8,11 @@ namespace Complejo.Application.Interfaces.Identity
     {
         Task<PagedList<User>> GetAllUserByFilter(string searchString = null, int page = 1, int size = 10);
 
+        Task<User> GetUserById(string id);
+
         Task<string> CreateUser(string email, string firstName, string lastName, string role);
 
-        Task<string> UpdateUser(string id, string email, string firstName, string lastName);
+        Task<string> UpdateUser(string id, string email, string firstName, string lastName, string role);
 
         Task DeleteUser(string id);
     }

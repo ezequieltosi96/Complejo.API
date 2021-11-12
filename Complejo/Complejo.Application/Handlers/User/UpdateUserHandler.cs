@@ -27,7 +27,7 @@ namespace Complejo.Application.Handlers.User
                 throw new Exceptions.ValidationException(validationResult);
             }
 
-            return await userService.UpdateUser(request.Id, request.Email, request.FirstName, request.LastName);
+            return await userService.UpdateUser(request.Id, request.Email, request.FirstName, request.LastName, request.RoleName);
         }
     }
 }

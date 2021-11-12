@@ -9,23 +9,6 @@ namespace Complejo.Application.Validators.User
         public CreateUserValidator(IValidator<AbstractCreateUpdateUserCommand> validator)
         {
             Include(validator);
-
-            RuleFor(x => x.RoleName)
-                .NotNull()
-                .NotEmpty()
-                    .WithMessage("El rol es obligatorio.")
-                .Must(ExistRole)
-                    .WithMessage("El rol no es valido.");
-        }
-
-        private bool ExistRole(string role)
-        {
-            if(role != "Admin" && role != "AppUser")
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

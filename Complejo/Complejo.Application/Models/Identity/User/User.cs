@@ -12,5 +12,7 @@
 
         public string LastName { get; set; }
 
+        public string RoleName { get; set; }
+
     }
 }

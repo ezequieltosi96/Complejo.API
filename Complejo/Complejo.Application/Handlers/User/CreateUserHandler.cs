@@ -1,4 +1,5 @@
 ﻿using Complejo.Application.Commands.User;
+using Complejo.Application.Exceptions;
 using Complejo.Application.Interfaces.Identity;
 using FluentValidation;
 using MediatR;
@@ -27,7 +28,14 @@ namespace Complejo.Application.Handlers.User
                 throw new Exceptions.ValidationException(validationResult);
             }
 
-            return await userService.CreateUser(request.Email, request.FirstName, request.LastName, request.RoleName);
+            string result = await userService.CreateUser(request.Email, request.FirstName, request.LastName, request.RoleName);
+
+            if(result == null)
+            {
+                throw new BadRequestException("Ocurrió un error al crear el usuario.");
+            }
+
+            return result;
         }
     }
 }

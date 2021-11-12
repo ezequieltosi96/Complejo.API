@@ -40,13 +40,20 @@ namespace Complejo.Identity.Services
 
             IList<ApplicationUser> applicationUsers = await query.Skip((page - 1) * size).Take(size).ToListAsync();
 
-            IList<User> users = applicationUsers.Select(x => new User() {
-                Id = x.Id,
-                UserName = x.UserName,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email
-            }).ToList();
+            IList<User> users = new List<User>();
+
+            foreach (var appUser in applicationUsers)
+            {
+                var user = new User();
+                user.Id = appUser.Id;
+                user.LastName = appUser.LastName;
+                user.FirstName = appUser.FirstName;
+                user.Email = appUser.Email;
+                user.UserName = appUser.UserName;
+                user.RoleName = (await userManager.GetRolesAsync(appUser)).FirstOrDefault();
+
+                users.Add(user);
+            }
 
             return new PagedList<User>(users, count, page, size);
         }
@@ -67,16 +74,19 @@ namespace Complejo.Identity.Services
                 throw new NotFoundException("Role", role);
             }
 
+            var counter = new Counter { Count = 0 };
+            await CountRepeatedUserName($"{firstName.ToLower()}.{lastName.ToLower()}", counter);
+
             var user = new ApplicationUser()
             {
                 Email = email,
                 FirstName = firstName,
                 LastName = lastName,
-                UserName = $"{firstName}.{lastName}",
-                EmailConfirmed = true
+                UserName = counter.Count > 0 ? $"{firstName.ToLower()}.{lastName.ToLower()}{counter.Count}" : $"{firstName.ToLower()}.{lastName.ToLower()}",
+                EmailConfirmed = true,
             };
 
-            var result = await userManager.CreateAsync(user, $"{firstName}@{lastName}");
+            var result = await userManager.CreateAsync(user, $"{firstName.ToLower()}@{lastName.ToLower()}");
 
             if (result.Succeeded)
             {
@@ -87,7 +97,7 @@ namespace Complejo.Identity.Services
             return null;
         }
 
-        public async Task<string> UpdateUser(string id, string email, string firstName, string lastName)
+        public async Task<string> UpdateUser(string id, string email, string firstName, string lastName, string role)
         {
             var existingUser = await userManager.FindByIdAsync(id);
 
@@ -98,16 +108,23 @@ namespace Complejo.Identity.Services
 
             var existingUserWithSameEmail = await userManager.FindByEmailAsync(email);
 
-            if (existingUserWithSameEmail != null)
+            if (existingUserWithSameEmail != null && existingUser.Id != id)
             {
                 throw new BadRequestException("Ya existe un usuario registrado con ese correo.");
             }
 
+            var counter = new Counter { Count = 0 };
+            await CountRepeatedUserName($"{firstName.ToLower()}.{lastName.ToLower()}", id, counter);
+
             existingUser.Email = email;
             existingUser.FirstName = firstName;
             existingUser.LastName = lastName;
-            existingUser.UserName = $"{firstName}.{lastName}";
+            existingUser.UserName = counter.Count > 0 ? $"{firstName.ToLower()}.{lastName.ToLower()}{counter.Count}" : $"{firstName.ToLower()}.{lastName.ToLower()}";
 
+            var oldRole = (await userManager.GetRolesAsync(existingUser)).FirstOrDefault();
+
+            var a = await userManager.AddToRoleAsync(existingUser, role);
+            var b = await userManager.RemoveFromRoleAsync(existingUser, oldRole);
             await userManager.UpdateAsync(existingUser);
 
             return existingUser.Id;
@@ -124,5 +141,52 @@ namespace Complejo.Identity.Services
 
             await userManager.DeleteAsync(existingUser);
         }
+
+        public async Task<User> GetUserById(string id)
+        {
+            var existingUser = await userManager.FindByIdAsync(id);
+
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            var user = new User();
+            user.Id = existingUser.Id;
+            user.LastName = existingUser.LastName;
+            user.FirstName = existingUser.FirstName;
+            user.Email = existingUser.Email;
+            user.UserName = existingUser.UserName;
+            user.RoleName = (await userManager.GetRolesAsync(existingUser)).FirstOrDefault();
+
+            return user;
+        }
+
+        private async Task CountRepeatedUserName(string username, string id, Counter counter)
+        {
+            var user = await userManager.FindByNameAsync(username);
+
+            if (user != null && user.Id != id)
+            {
+                counter.Count++;
+                await CountRepeatedUserName($"{username}{counter.Count}", id, counter);
+            }
+        }
+
+        private async Task CountRepeatedUserName(string username, Counter counter)
+        {
+            var user = await userManager.FindByNameAsync(username);
+
+            if (user != null)
+            {
+                counter.Count++;
+                await CountRepeatedUserName($"{username}{counter.Count}", counter);
+            }
+        }
+    }
+
+    public class Counter
+    {
+        public int Count { get; set; }
     }
 }

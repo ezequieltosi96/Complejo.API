@@ -23,7 +23,7 @@ namespace Complejo.API.Controllers
         }
 
         [HttpPost(Name = "Create User")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
@@ -33,7 +33,7 @@ namespace Complejo.API.Controllers
         }
 
         [HttpPut(Name = "Update User")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -44,7 +44,7 @@ namespace Complejo.API.Controllers
         }
 
         [HttpDelete("{id}", Name = "Delete User")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -62,6 +62,16 @@ namespace Complejo.API.Controllers
         public async Task<IActionResult> GetAllUserByFilter([FromQuery] GetAllUserByFilterQuery query)
         {
             var response = await mediator.Send(query);
+            return this.OkIfNotNullNotFoundOtherwise(response);
+        }
+
+        [HttpGet("{id}", Name = "Get User By Id")]
+        [ProducesResponseType(typeof(UserByIdDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            var response = await mediator.Send(new GetUserByIdQuery { IdUser = id });
             return this.OkIfNotNullNotFoundOtherwise(response);
         }
     }
