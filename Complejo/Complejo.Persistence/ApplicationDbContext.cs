@@ -12,10 +12,6 @@ namespace Complejo.Persistence
     {
         private readonly IUserContext userContext;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUserContext userContext) : base(options)
         {
             this.userContext = userContext;
@@ -23,7 +19,9 @@ namespace Complejo.Persistence
 
         public DbSet<Field> Fields { get; set; }
         public DbSet<FieldStatus> FieldStatus { get; set; }
-        public DbSet<Field> FieldTypes { get; set; }
+        public DbSet<FieldType> FieldTypes { get; set; }
+        public DbSet<Turn> Turns { get; set; }
+        public DbSet<Client> Clients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,11 +37,11 @@ namespace Complejo.Persistence
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedDate = DateTime.Now;
-                        entry.Entity.CreatedBy = "USER";//userContext.UserId;
+                        entry.Entity.CreatedBy = userContext != null && userContext.UserName != null ? userContext.UserName : "Cliente";
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastUpdatedDate = DateTime.Now;
-                        entry.Entity.LastUpdatedBy = "USER UPDATE";
+                        entry.Entity.LastUpdatedBy = userContext.UserName;
                         break;
                 }
             }

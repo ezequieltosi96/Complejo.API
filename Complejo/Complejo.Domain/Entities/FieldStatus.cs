@@ -14,12 +14,12 @@ namespace Complejo.Domain.Entities
         private enum FieldStatusGroup
         {
             AVAILABLE = 1,
-            RESERVED = 2,
-            IN_MAITENANCE = 3
+            IN_MAITENANCE = 2,
+            RESERVED = 3
         }
 
         public const int AVAILABLE = (int)FieldStatusGroup.AVAILABLE;
-        public const int RESERVED = (int)FieldStatusGroup.RESERVED;
         public const int IN_MAITENANCE = (int)FieldStatusGroup.IN_MAITENANCE;
+        public const int RESERVED = (int)FieldStatusGroup.RESERVED;
     }
 }

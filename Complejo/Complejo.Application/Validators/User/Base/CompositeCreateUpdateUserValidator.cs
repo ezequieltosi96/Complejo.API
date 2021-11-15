@@ -1,19 +1,27 @@
 ﻿using Complejo.Application.Commands.User.Base;
+using Complejo.Application.Interfaces.Identity;
 using FluentValidation;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Complejo.Application.Validators.User.Base
 {
-    public class CompositeCreateUpdateUserValidator : AbstractValidator<AbstractCreateUpdateUserCommand>
+    public class CompositeCreateUpdateUserValidator : AbstractValidator<AbstractCreateUserCommand>
     {
+        private readonly IUserService userService;
 
-        public CompositeCreateUpdateUserValidator()
+        public CompositeCreateUpdateUserValidator(IUserService userService)
         {
+            this.userService = userService;
+        
             RuleFor(x => x.Email)
                 .NotNull()
                 .NotEmpty()
                     .WithMessage("El correo es obligatorio.")
                 .EmailAddress()
-                    .WithMessage("Debe ingresar un email valido.");
+                    .WithMessage("Debe ingresar un email valido.")
+                 .MustAsync(ValidEmail)
+                    .WithMessage("El correo ya se encuentra registrado.");
 
             RuleFor(x => x.FirstName)
                 .NotNull()
@@ -24,23 +32,11 @@ namespace Complejo.Application.Validators.User.Base
                 .NotNull()
                 .NotEmpty()
                     .WithMessage("El apellido es obligatorio.");
-
-            RuleFor(x => x.RoleName)
-                .NotNull()
-                .NotEmpty()
-                    .WithMessage("El rol es obligatorio.")
-                .Must(ExistRole)
-                    .WithMessage("El rol no es valido.");
         }
 
-        private bool ExistRole(string role)
+        private async Task<bool> ValidEmail(string email, CancellationToken cancellationToken)
         {
-            if (role != "Admin" && role != "AppUser")
-            {
-                return false;
-            }
-
-            return true;
+            return (await userService.GetByEmail(email)) == null;
         }
     }
 }

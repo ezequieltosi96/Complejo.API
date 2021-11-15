@@ -63,26 +63,23 @@ namespace Complejo.Identity.Services
 
         public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
         {
-            var existingUser = await userManager.FindByNameAsync(request.UserName);
-
-            if (existingUser != null)
-            {
-                throw new Exception($"Username '{request.UserName}' already exists.");
-            }
-
             var roleResult = await ManageRole(request.RoleName);
             if(!roleResult)
             {
                 throw new BadRequestException("An error has occured while register the user.");
             }
 
+            var counter = new Counter { Count = 0 };
+            await CountRepeatedUserName($"{request.FirstName.ToLower()}.{request.LastName.ToLower()}", counter);
+
             var user = new ApplicationUser()
             {
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                UserName = request.UserName,
-                EmailConfirmed = true
+                UserName = counter.Count > 0 ? $"{request.FirstName.ToLower()}.{request.LastName.ToLower()}{counter.Count}" : $"{request.FirstName.ToLower()}.{request.LastName.ToLower()}",
+                EmailConfirmed = true,
+                IdClient = request.IdClient.Value,
             };
 
             var existingEmail = await userManager.FindByEmailAsync(request.Email);
@@ -108,6 +105,9 @@ namespace Complejo.Identity.Services
         private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)
         {
             var userClaims = await userManager.GetClaimsAsync(user);
+
+            await userManager.RemoveClaimsAsync(user, userClaims);
+
             var roles = await userManager.GetRolesAsync(user);
 
             var roleClaims = new List<Claim>();
@@ -124,7 +124,9 @@ namespace Complejo.Identity.Services
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("uid", user.Id),
                 new Claim("isAdmin", roles.Contains("Admin").ToString())
-            }.Union(userClaims).Union(roleClaims);
+            }.Union(roleClaims);
+
+            await userManager.AddClaimsAsync(user, claims);
 
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
             var signinCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
@@ -133,7 +135,7 @@ namespace Complejo.Identity.Services
                 issuer: jwtSettings.Issuer,
                 audience: jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(jwtSettings.DurationInMinutes),
+                expires: DateTime.Now.AddMinutes(jwtSettings.DurationInMinutes),
                 signingCredentials: signinCredentials);
 
             return jwtSecurityToken;
@@ -154,6 +156,17 @@ namespace Complejo.Identity.Services
             }
 
             return await roleManager.RoleExistsAsync(roleName);
+        }
+
+        private async Task CountRepeatedUserName(string username, Counter counter)
+        {
+            var user = await userManager.FindByNameAsync(username);
+
+            if (user != null)
+            {
+                counter.Count++;
+                await CountRepeatedUserName($"{username}{counter.Count}", counter);
+            }
         }
     }
 }

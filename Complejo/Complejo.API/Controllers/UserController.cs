@@ -4,6 +4,7 @@ using Complejo.Application.Dtos.User;
 using Complejo.Application.Queries.User;
 using Complejo.Application.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -22,27 +23,18 @@ namespace Complejo.API.Controllers
             this.mediator = mediator;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost(Name = "Create User")]
         [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
+        public async Task<IActionResult> CreateUser([FromBody] CreateAdminUserCommand command)
         {
             var response = await mediator.Send(command);
             return CreatedAtAction(nameof(CreateUser), response);
         }
 
-        [HttpPut(Name = "Update User")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
-        {
-            var response = await mediator.Send(command);
-            return Ok(response);
-        }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}", Name = "Delete User")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -54,25 +46,26 @@ namespace Complejo.API.Controllers
             return Ok(response);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("by-filter", Name = "Get All User By Filter")]
         [ProducesResponseType(typeof(PagedListResponse<List<UserByFilterDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAllUserByFilter([FromQuery] GetAllUserByFilterQuery query)
+        public async Task<IActionResult> GetAllUserByFilter([FromQuery] GetAllAdminUserByFilterQuery query)
         {
             var response = await mediator.Send(query);
             return this.OkIfNotNullNotFoundOtherwise(response);
         }
 
-        [HttpGet("{id}", Name = "Get User By Id")]
-        [ProducesResponseType(typeof(UserByIdDto), StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin")]
+        [HttpPost("reset-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserById(string id)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
         {
-            var response = await mediator.Send(new GetUserByIdQuery { IdUser = id });
-            return this.OkIfNotNullNotFoundOtherwise(response);
+            var response = await mediator.Send(command);
+            return Ok();
         }
     }
 }

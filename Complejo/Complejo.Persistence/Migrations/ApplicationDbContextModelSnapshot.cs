@@ -19,6 +19,45 @@ namespace Complejo.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Complejo.Domain.Entities.Client", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Dni")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("varchar(8)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)");
+
+                    b.Property<string>("FullNameSearch")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasMaxLength(250)
+                        .HasColumnType("varchar(250)")
+                        .HasComputedColumnSql("upper([FullName])");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("varchar(13)");
+
+                    b.Property<bool>("Removed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasColumnName("Removed")
+                        .HasDefaultValueSql("0");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Client");
+                });
+
             modelBuilder.Entity("Complejo.Domain.Entities.Field", b =>
                 {
                     b.Property<Guid>("Id")
@@ -104,6 +143,22 @@ namespace Complejo.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DEF_FieldStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("76fdb5f8-34c9-4a81-8c3f-0de8e4e92286"),
+                            Description = "Disponible",
+                            IdFieldStatusGroup = 1,
+                            Removed = false
+                        },
+                        new
+                        {
+                            Id = new Guid("d9499a3d-6c85-4838-9ea7-e307c9eb002f"),
+                            Description = "En Mantenimiento",
+                            IdFieldStatusGroup = 2,
+                            Removed = false
+                        });
                 });
 
             modelBuilder.Entity("Complejo.Domain.Entities.FieldType", b =>
@@ -137,6 +192,82 @@ namespace Complejo.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DEF_FieldType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("0921a032-084e-4506-a5f9-c039e0b50a6d"),
+                            Description = "Fútbol 5",
+                            IdFieldTypeGroup = 1,
+                            Removed = false
+                        },
+                        new
+                        {
+                            Id = new Guid("dfd57843-a183-464f-8209-803ce807f66b"),
+                            Description = "Fútbol 8",
+                            IdFieldTypeGroup = 2,
+                            Removed = false
+                        },
+                        new
+                        {
+                            Id = new Guid("8cb8a211-2a30-4b0a-b2db-36170dd467ee"),
+                            Description = "Fútbol 11",
+                            IdFieldTypeGroup = 3,
+                            Removed = false
+                        });
+                });
+
+            modelBuilder.Entity("Complejo.Domain.Entities.Turn", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("varchar(7)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("IdClient")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IdField")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime?>("LastUpdatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool>("Removed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasColumnName("Removed")
+                        .HasDefaultValueSql("0");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdClient");
+
+                    b.HasIndex("IdField");
+
+                    b.ToTable("Turn");
                 });
 
             modelBuilder.Entity("Complejo.Domain.Entities.Field", b =>
@@ -156,6 +287,23 @@ namespace Complejo.Persistence.Migrations
                     b.Navigation("FieldStatus");
 
                     b.Navigation("FieldType");
+                });
+
+            modelBuilder.Entity("Complejo.Domain.Entities.Turn", b =>
+                {
+                    b.HasOne("Complejo.Domain.Entities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("IdClient");
+
+                    b.HasOne("Complejo.Domain.Entities.Field", "Field")
+                        .WithMany()
+                        .HasForeignKey("IdField")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Field");
                 });
 #pragma warning restore 612, 618
         }

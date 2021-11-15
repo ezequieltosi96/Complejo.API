@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Complejo.Application.Models.Identity.Registration
 {
@@ -15,14 +16,21 @@ namespace Complejo.Application.Models.Identity.Registration
         public string Email { get; set; }
 
         [Required]
-        [MinLength(6)]
-        public string UserName { get; set; }
-
-        [Required]
         [MinLength(8)]
         public string Password { get; set; }
 
         [Required]
         public string RoleName { get; set; }
+
+        [Required]
+        [MaxLength(8)]
+        [MinLength(8)]
+        public string Dni { get; set; }
+
+        [Required]
+        [MaxLength(13)]
+        public string PhoneNumber { get; set; }
+
+        public Guid? IdClient { get; set; }
     }
 }

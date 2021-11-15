@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Complejo.Application.Commands.Field;
 using Complejo.Application.Dtos.Field;
+using Complejo.Application.Dtos.UiControls;
 using Complejo.Domain.Entities;
-using System;
 
 namespace Complejo.Infrastructure.Automapper
 {
@@ -17,6 +17,13 @@ namespace Complejo.Infrastructure.Automapper
             // from field
             CreateMapFieldFieldByIdDto();
             CreateMapFieldFieldByFilterDto();
+            CreateMapFieldComboBoxDto();
+        }
+
+        private void CreateMapFieldComboBoxDto()
+        {
+            CreateMap<Field, ComboBoxDto>()
+                .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.Description));
         }
 
         private void CreateMapFieldFieldByFilterDto()

@@ -48,11 +48,11 @@ namespace Complejo.API.Middlewares
                     result = badRequestException.Message;
                     break;
 
-                case NotFoundException notFoundException:
+                case NotFoundException _:
                     httpStatusCode = HttpStatusCode.NotFound;
                     break;
 
-                case Exception ex:
+                case Exception _:
                     httpStatusCode = HttpStatusCode.BadRequest;
                     break;
             }

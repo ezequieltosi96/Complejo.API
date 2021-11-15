@@ -17,6 +17,13 @@ namespace Complejo.Application.Handlers.User
 
         public async Task<bool> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
+            var user = await userService.GetUserById(request.IdUser);
+
+            if(user.IdClient.HasValue)
+            {
+                throw new Exceptions.BadRequestException("El usuario no se puede eliminar por que esta asignado a un cliente vigente.");
+            }
+
             await userService.DeleteUser(request.IdUser);
 
             return true;

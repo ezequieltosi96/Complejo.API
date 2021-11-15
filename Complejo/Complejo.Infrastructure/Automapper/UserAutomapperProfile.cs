@@ -8,19 +8,13 @@ namespace Complejo.Infrastructure.Automapper
     {
         public void UserAutomapperProfile()
         {
-            CreateMapUserUserByFilterDto(); 
-            CreateMapUserUserByIdDto();
+            CreateMapUserUserByFilterDto();
         }
 
         private void CreateMapUserUserByFilterDto()
         {
             CreateMap<User, UserByFilterDto>()
                 .ForMember(dest => dest.FullName, opts => opts.MapFrom(src => $"{src.FirstName} {src.LastName}"));
-        }
-
-        private void CreateMapUserUserByIdDto()
-        {
-            CreateMap<User, UserByIdDto>();
         }
     }
 }

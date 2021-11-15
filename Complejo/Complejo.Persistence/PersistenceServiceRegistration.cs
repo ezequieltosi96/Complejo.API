@@ -26,6 +26,10 @@ namespace Complejo.Persistence
             services.AddScoped<IFieldTypeRepository, FieldTypeRepository>();
             services.AddScoped<IFieldStatusRepository, FieldStatusRepository>();
 
+            services.AddScoped<ITurnRepository, TurnRepository>();
+
+            services.AddScoped<IClientRepository, ClientRepository>();
+
             return services;
         }
     }

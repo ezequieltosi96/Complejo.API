@@ -30,7 +30,7 @@ namespace Complejo.Application.Handlers.Field
         {
             Expression<Func<Domain.Entities.Field, bool>> predicate = x => request.Description != null ? x.DescriptionSearch.Contains(request.Description.Trim().ToUpper()) : true && 
                                                                            request.IdFieldStatus.HasValue ? x.FieldStatus.Id == request.IdFieldStatus.Value : true &&
-                                                                           request.IdFieldType.HasValue ? x.FieldType.Id == request.IdFieldStatus.Value : true;
+                                                                           request.IdFieldType.HasValue ? x.FieldType.Id == request.IdFieldType.Value : true;
 
             Func<IQueryable<Domain.Entities.Field>, IOrderedQueryable<Domain.Entities.Field>> order = x => x.OrderBy(f => f.Description);
 

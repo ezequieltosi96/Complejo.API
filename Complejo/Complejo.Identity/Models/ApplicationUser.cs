@@ -1,5 +1,6 @@
-﻿using Complejo.Application.Interfaces.Identity;
+﻿using Complejo.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace Complejo.Identity.Models
 {
@@ -8,5 +9,7 @@ namespace Complejo.Identity.Models
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        public Guid? IdClient { get; set; }
     }
 }

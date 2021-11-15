@@ -77,7 +77,7 @@ namespace Complejo.Persistence.Repositories.Base
 
         public Task<bool> Exist(Guid id)
         {
-            bool exist = dbContext.Set<T>().Any(x => x.Id == id);
+            bool exist = dbContext.Set<T>().Any(x => x.Id == id && !x.Removed);
 
             return Task.FromResult(exist);
         }

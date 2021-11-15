@@ -12,7 +12,9 @@ namespace Complejo.Infrastructure.Automapper
 
             UserAutomapperProfile();
 
+            TurnAutomapperProfile();
 
+            ClientAutommaperProfile();
         }
     }
 }

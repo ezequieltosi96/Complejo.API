@@ -1,4 +1,6 @@
-﻿namespace Complejo.Application.Models.Identity.User
+﻿using System;
+
+namespace Complejo.Application.Models.Identity.User
 {
     public class User
     {
@@ -13,6 +15,8 @@
         public string LastName { get; set; }
 
         public string RoleName { get; set; }
+
+        public Guid? IdClient { get; set; }
 
     }
 }

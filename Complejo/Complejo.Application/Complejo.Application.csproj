@@ -5,11 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Turn\" />
-    <Folder Include="Dtos\Turn\" />
-    <Folder Include="Handlers\Turn\" />
+    <Folder Include="Dtos\Client\" />
     <Folder Include="Interfaces\Infrastructure\" />
-    <Folder Include="Queries\Turn\" />
   </ItemGroup>
 
   <ItemGroup>

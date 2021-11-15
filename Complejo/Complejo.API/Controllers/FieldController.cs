@@ -5,6 +5,7 @@ using Complejo.Application.Dtos.UiControls;
 using Complejo.Application.Queries.Field;
 using Complejo.Application.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,6 +25,7 @@ namespace Complejo.API.Controllers
             this.mediator = mediator;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost(Name = "Create Field")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -34,6 +36,7 @@ namespace Complejo.API.Controllers
             return CreatedAtAction(nameof(CreateField), response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut(Name = "Update Field")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -45,6 +48,7 @@ namespace Complejo.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}", Name = "Delete Field")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

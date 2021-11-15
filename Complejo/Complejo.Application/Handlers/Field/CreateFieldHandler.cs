@@ -12,18 +12,14 @@ namespace Complejo.Application.Handlers.Field
     public class CreateFieldHandler : IRequestHandler<CreateFieldCommand, Guid>
     {
         private readonly IFieldRepository fieldRepository;
-        private readonly IFieldStatusRepository fieldStatusRepository;
-        private readonly IFieldTypeRepository fieldTypeRepository;
         private readonly IValidator<CreateFieldCommand> validator;
         private readonly IMapping mapping;
 
-        public CreateFieldHandler(IFieldRepository fieldRepository, IMapping mapping, IValidator<CreateFieldCommand> validator, IFieldStatusRepository fieldStatusRepository, IFieldTypeRepository fieldTypeRepository)
+        public CreateFieldHandler(IFieldRepository fieldRepository, IMapping mapping, IValidator<CreateFieldCommand> validator)
         {
             this.fieldRepository = fieldRepository;
             this.mapping = mapping;
             this.validator = validator;
-            this.fieldStatusRepository = fieldStatusRepository;
-            this.fieldTypeRepository = fieldTypeRepository;
         }
 
         public async Task<Guid> Handle(CreateFieldCommand request, CancellationToken cancellationToken)

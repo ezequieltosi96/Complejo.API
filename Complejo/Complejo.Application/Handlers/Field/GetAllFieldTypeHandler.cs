@@ -32,13 +32,13 @@ namespace Complejo.Application.Handlers.Field
             {
                 Domain.Entities.Field field = await fieldRepository.GetByIdAsync(request.IdEntity.Value, x => x.Include(field => field.FieldType));
 
-                if (field != null && !fieldTypes.Any(x => x.Id == field.FieldStatus.Id))
+                if (field != null && !fieldTypes.Any(x => x.Id == field.FieldType.Id))
                 {
                     fieldTypes.Add(field.FieldType);
                 }
             }
 
-            return mapping.Map<IEnumerable<ComboBoxDto>>(fieldTypes).OrderBy(x => x.Name);
+            return mapping.Map<IEnumerable<ComboBoxDto>>(fieldTypes.OrderBy(x => x.IdFieldTypeGroup));
         }
     }
 }
