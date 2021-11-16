@@ -4,14 +4,16 @@ using Complejo.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Complejo.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211116001358_Field_Price_Added")]
+    partial class Field_Price_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,7 +100,7 @@ namespace Complejo.Persistence.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("Removed")
                         .ValueGeneratedOnAdd()
@@ -150,14 +152,14 @@ namespace Complejo.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("762c14e0-9e82-4e19-928c-869a2affd44c"),
+                            Id = new Guid("76492c2c-2e4a-4fc8-8b0b-eda1604810bd"),
                             Description = "Disponible",
                             IdFieldStatusGroup = 1,
                             Removed = false
                         },
                         new
                         {
-                            Id = new Guid("edbef389-6fbf-40f2-9e03-a24692351ac3"),
+                            Id = new Guid("f1c024dc-cbcb-45d2-a834-a19ab865b84a"),
                             Description = "En Mantenimiento",
                             IdFieldStatusGroup = 2,
                             Removed = false
@@ -199,21 +201,21 @@ namespace Complejo.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("bb029c38-4690-40bf-806a-8d34a5d497de"),
+                            Id = new Guid("e1b27fad-18c5-45b2-bba2-3c355f8597f9"),
                             Description = "Fútbol 5",
                             IdFieldTypeGroup = 1,
                             Removed = false
                         },
                         new
                         {
-                            Id = new Guid("3b4b39f6-90c3-4f63-959c-b488d00e4de0"),
+                            Id = new Guid("040498cc-92d6-4952-8d38-451435a28e4c"),
                             Description = "Fútbol 8",
                             IdFieldTypeGroup = 2,
                             Removed = false
                         },
                         new
                         {
-                            Id = new Guid("c07785d8-4571-452c-9cce-b4c45f0b55bf"),
+                            Id = new Guid("6461109c-0c03-4e29-9a85-b9183c7ba546"),
                             Description = "Fútbol 11",
                             IdFieldTypeGroup = 3,
                             Removed = false

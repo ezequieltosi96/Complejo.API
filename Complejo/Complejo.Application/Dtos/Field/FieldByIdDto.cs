@@ -19,5 +19,7 @@ namespace Complejo.Application.Dtos.Field
 
         public string Type { get; set; }
 
+        public decimal Price { get; set; }
+
     }
 }

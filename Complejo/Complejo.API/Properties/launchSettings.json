@@ -15,7 +15,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "CorsPolicyWithOrigins": "http://localhost:4200"
+        "CorsPolicyWithOrigins": "https://localhost:4200"
       }
     },
     "Complejo.API": {

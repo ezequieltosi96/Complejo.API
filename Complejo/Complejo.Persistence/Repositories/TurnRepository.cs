@@ -20,10 +20,10 @@ namespace Complejo.Persistence.Repositories
         {
             IQueryable<Turn> query = dbContext.Turns;
 
-            int count = query.Count();
+            int count = query.Where(t => t.IdClient == idClient && !t.Removed).Count();
 
-            IList<Turn> turns = await query.Where(t => t.IdClient == idClient && !t.Removed)
-                                           .Skip((page - 1) * size).Take(size).ToListAsync();
+            IList<Turn> turns = await query.Include(x => x.Field).Include(x => x.Field.FieldType).Where(t => t.IdClient == idClient && !t.Removed)
+                                           .Skip((page - 1) * size).Take(size).OrderByDescending(t => t.Time).ToListAsync();
 
             return new PagedList<Turn>(turns, count, page, size);
         }
@@ -45,6 +45,11 @@ namespace Complejo.Persistence.Repositories
                                            .Skip((page - 1) * size).Take(size).ToListAsync();
 
             return new PagedList<Turn>(turns, count, page, size);
+        }
+
+        public Task<Turn> GetByCode(string code)
+        {
+            return dbContext.Turns.Include(x => x.Field).Include(x => x.Field.FieldType).Include(x => x.Client).Where(x => !x.Removed && x.Code == code).FirstOrDefaultAsync();
         }
 
         public bool IsTurnAvailable(DateTime time, Guid idField)

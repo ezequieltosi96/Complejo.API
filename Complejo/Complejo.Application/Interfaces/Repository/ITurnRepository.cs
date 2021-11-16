@@ -16,5 +16,7 @@ namespace Complejo.Application.Interfaces.Repository
         Task<PagedList<Turn>> GetAllByClient(Guid idClient, int page, int size);
         
         Task<IList<Turn>> GetAllByDateAndTime(DateTime date, DateTime time);
+
+        Task<Turn> GetByCode(string code);
     }
 }

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Complejo.Application.Validators.Turn
 {
-    public class CreateTurnValidator : AbstractValidator<CreateTurnCommand>
+    public class CreateReservationUnregisteredClientValidator : AbstractValidator<CreateReservationUnregisteredClientCommand>
     {
         private readonly IFieldRepository fieldRepository;
 
 
-        public CreateTurnValidator(IFieldRepository fieldRepository)
+        public CreateReservationUnregisteredClientValidator(IFieldRepository fieldRepository)
         {
             this.fieldRepository = fieldRepository;
 

@@ -3,7 +3,7 @@ using System;
 
 namespace Complejo.Application.Commands.Turn
 {
-    public class CreateTurnCommand : IRequest<Guid>
+    public class CreateReservationUnregisteredClientCommand : IRequest<string>
     {
         public DateTime Date { get; set; }
 

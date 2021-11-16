@@ -1,36 +1,30 @@
-﻿using Complejo.Application.Dtos.UiControls;
+﻿using Complejo.Application.Dtos.Field;
 using Complejo.Application.Interfaces.Mapping;
 using Complejo.Application.Interfaces.Repository;
-using Complejo.Application.Queries.Turn;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Complejo.Application.Handlers.Turn
+namespace Complejo.Application.Queries.Field
 {
-    public class GetAllAvailableFieldByDateTimeHandler : IRequestHandler<GetAllAvailableFieldByDateTimeQuery, IList<ComboBoxDto>>
+    public class GetAllFieldForNewReservationHandler : IRequestHandler<GetAllFieldForNewReservationQuery, IList<FieldByIdDto>>
     {
         private readonly IFieldRepository fieldRepository;
         private readonly ITurnRepository turnRepository;
         private readonly IMapping mapping;
 
-        public GetAllAvailableFieldByDateTimeHandler(IFieldRepository fieldRepository, ITurnRepository turnRepository, IMapping mapping)
+        public GetAllFieldForNewReservationHandler(IFieldRepository fieldRepository, ITurnRepository turnRepository, IMapping mapping)
         {
             this.fieldRepository = fieldRepository;
             this.turnRepository = turnRepository;
             this.mapping = mapping;
         }
 
-        public async Task<IList<ComboBoxDto>> Handle(GetAllAvailableFieldByDateTimeQuery request, CancellationToken cancellationToken)
+        public async Task<IList<FieldByIdDto>> Handle(GetAllFieldForNewReservationQuery request, CancellationToken cancellationToken)
         {
-            IList<Domain.Entities.Field> fields = await fieldRepository.ListAllAvailableAsync();
-
-            if (!request.Date.HasValue || string.IsNullOrEmpty(request.Time))
-            {
-                return mapping.Map<IList<ComboBoxDto>>(fields);
-            }
+            IList<Domain.Entities.Field> fields = await fieldRepository.ListAllAvailableByTypeAsync(request.IdFieldType);
 
             var time = DateTime.Now;
 
@@ -40,7 +34,7 @@ namespace Complejo.Application.Handlers.Turn
                 time = time.Date + ts;
             }
 
-            IList<Domain.Entities.Turn> turns = await turnRepository.GetAllByDateAndTime(request.Date.Value, time);
+            IList<Domain.Entities.Turn> turns = await turnRepository.GetAllByDateAndTime(request.Date, time);
 
             foreach (var turn in turns)
             {
@@ -50,7 +44,7 @@ namespace Complejo.Application.Handlers.Turn
                 }
             }
 
-            return mapping.Map<IList<ComboBoxDto>>(fields);
+            return mapping.Map<IList<FieldByIdDto>>(fields);
         }
     }
 }

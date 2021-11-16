@@ -1,7 +1,9 @@
 ﻿using Complejo.Application.Interfaces.Repository;
 using Complejo.Domain.Entities;
 using Complejo.Persistence.Repositories.Base;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,6 +29,16 @@ namespace Complejo.Persistence.Repositories
             }
 
             return Task.FromResult(result);
+        }
+
+        public async Task<IList<Field>> ListAllAvailableAsync()
+        {
+            return await dbContext.Fields.Include(x => x.FieldStatus).Where(x => !x.Removed && x.FieldStatus.IdFieldStatusGroup == FieldStatus.AVAILABLE).ToListAsync();
+        }
+
+        public async Task<IList<Field>> ListAllAvailableByTypeAsync(Guid idFieldType)
+        {
+            return await dbContext.Fields.Include(x => x.FieldStatus).Include(x => x.FieldType).Where(x => !x.Removed && x.IdFieldType == idFieldType && x.FieldStatus.IdFieldStatusGroup == FieldStatus.AVAILABLE).ToListAsync();
         }
     }
 }

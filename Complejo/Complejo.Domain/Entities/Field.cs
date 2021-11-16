@@ -10,6 +10,8 @@ namespace Complejo.Domain.Entities
 
         public string DescriptionSearch { get; set; }
 
+        public decimal Price { get; set; }
+
         public Guid IdFieldStatus { get; set; }
 
         public Guid IdFieldType { get; set; }

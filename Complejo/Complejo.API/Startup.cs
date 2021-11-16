@@ -47,8 +47,9 @@ namespace Complejo.API
                 opts.AddPolicy(name: CorsPolicyName,
                                builder =>
                                {
+                                   //.WithOrigins(Environment.GetEnvironmentVariable(KEY_CORS_POLICY_WITH_ORIGINS))
                                    builder
-                                   .WithOrigins(Environment.GetEnvironmentVariable(KEY_CORS_POLICY_WITH_ORIGINS))
+                                   .AllowAnyOrigin()
                                    .AllowAnyMethod()
                                    .AllowAnyHeader();
                                });

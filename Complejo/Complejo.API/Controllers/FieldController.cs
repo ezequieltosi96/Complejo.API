@@ -99,5 +99,14 @@ namespace Complejo.API.Controllers
             var response = await mediator.Send(query);
             return this.OkIfNotNullNotFoundOtherwise(response);
         }
+
+        [HttpGet("for-new-reservation", Name = "Get All Fields For Reservarion")]
+        [ProducesResponseType(typeof(List<FieldByIdDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAllFieldForNewReservation([FromQuery] GetAllFieldForNewReservationQuery query)
+        {
+            var response = await mediator.Send(query);
+            return this.OkIfNotNullNotFoundOtherwise(response);
+        }
     }
 }

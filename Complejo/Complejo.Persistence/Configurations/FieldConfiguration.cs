@@ -1,5 +1,6 @@
 ﻿using Complejo.Domain.Entities;
 using Complejo.Persistence.Configurations.Base;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Complejo.Persistence.Configurations
@@ -15,6 +16,8 @@ namespace Complejo.Persistence.Configurations
             base.Configure(builder);
 
             GenericConfiguration.ConfigureDescription(builder, 100);
+
+            builder.Property(x => x.Price).IsRequired().HasColumnType("decimal");
 
             builder.HasOne(f => f.FieldStatus).WithMany().HasForeignKey(x => x.IdFieldStatus);
 

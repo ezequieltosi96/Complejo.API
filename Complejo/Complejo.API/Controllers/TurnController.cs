@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Complejo.API.Controllers
@@ -48,6 +49,25 @@ namespace Complejo.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost("unregistered", Name = "Create Reservation For Unregisted Client")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateReservationUnregisteredClient([FromBody] CreateReservationUnregisteredClientCommand command)
+        {
+            var response = await mediator.Send(command);
+            return Ok(JsonSerializer.Serialize(response));
+        }
+
+        [Authorize(Roles = "AppUser")]
+        [HttpPost("registered", Name = "Create Reservation Registed Client")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> CreateReservationLoggedInClient([FromBody] CreateReservationLoggedInClientCommand command)
+        {
+            var response = await mediator.Send(command);
+            return Ok(JsonSerializer.Serialize(response));
+        }
 
 
         [HttpGet("by-filter", Name = "Get All Turn By Filter")]
@@ -82,7 +102,7 @@ namespace Complejo.API.Controllers
         }
 
         [HttpGet("by-client", Name = "Get All Turns By Client")]
-        [ProducesResponseType(typeof(PagedListResponse<List<TurnByFilterDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedListResponse<List<TurnByClientDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetTurnsByClient([FromQuery] GetAllTurnsByClientQuery query)
@@ -98,6 +118,16 @@ namespace Complejo.API.Controllers
         public async Task<IActionResult> GetTurndById(Guid id)
         {
             var response = await mediator.Send(new GetTurnByIdQuery { IdTurn = id });
+            return this.OkIfNotNullNotFoundOtherwise(response);
+        }
+
+        [HttpGet("by-code", Name = "Get Turn By Code")]
+        [ProducesResponseType(typeof(TurnByIdDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetTurndByCode([FromQuery] GetTurnByCodeQuery query)
+        {
+            var response = await mediator.Send(query);
             return this.OkIfNotNullNotFoundOtherwise(response);
         }
     }

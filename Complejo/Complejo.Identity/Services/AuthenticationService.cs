@@ -123,7 +123,8 @@ namespace Complejo.Identity.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("uid", user.Id),
-                new Claim("isAdmin", roles.Contains("Admin").ToString())
+                new Claim("isAdmin", roles.Contains("Admin").ToString()),
+                new Claim("idClient", user.IdClient.HasValue ? user.IdClient.ToString() : "")
             }.Union(roleClaims);
 
             await userManager.AddClaimsAsync(user, claims);
