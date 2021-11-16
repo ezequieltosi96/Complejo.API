@@ -124,11 +124,20 @@ namespace Complejo.API.Controllers
         [HttpGet("by-code", Name = "Get Turn By Code")]
         [ProducesResponseType(typeof(TurnByIdDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetTurndByCode([FromQuery] GetTurnByCodeQuery query)
         {
             var response = await mediator.Send(query);
             return this.OkIfNotNullNotFoundOtherwise(response);
+        }
+
+        [HttpDelete("cancel/{id}", Name = "Cancel Turn")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CancelTurn(Guid id)
+        {
+            var response = await mediator.Send(new CancelTurnCommand { Id = id }); ;
+            return Ok(response);
         }
     }
 }

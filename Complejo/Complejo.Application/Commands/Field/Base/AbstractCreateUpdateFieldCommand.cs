@@ -10,5 +10,7 @@ namespace Complejo.Application.Commands.Field.Base
         public Guid? IdFieldType { get; set; }
 
         public Guid? IdFieldStatus { get; set; }
+
+        public decimal Price { get; set; }
     }
 }
